@@ -1,0 +1,66 @@
+---
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+---
+
+<svg
+  class="icono-caso"
+  viewBox="0 0 24 24"
+  width="26"
+  height="26"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  {slug === "levantamientos" && (
+    <>
+      <circle cx="12" cy="6" r="2.1" />
+      <path d="M12 8.1V12" />
+      <path d="M12 12L6 20M12 12l6 8" />
+    </>
+  )}
+
+  {slug === "subdivisiones" && (
+    <>
+      <rect x="4" y="4" width="16" height="16" rx="0.5" />
+      <path d="M12 4v16M4 12h16" />
+    </>
+  )}
+
+  {slug === "aclaracion-areas" && (
+    <>
+      <circle cx="10" cy="10" r="6" />
+      <path d="M14.4 14.4L20 20" />
+    </>
+  )}
+
+  {slug === "replanteo" && (
+    <>
+      <path d="M7 3.5v17" />
+      <path d="M7 3.5l6.5 2.3L7 8.1z" fill="currentColor" stroke="none" />
+      <path d="M7 20.5h13" stroke-dasharray="1.5 2.5" />
+    </>
+  )}
+
+  {slug === "georreferenciacion" && (
+    <>
+      <path d="M12 21s7-7.4 7-12.3A7 7 0 105 8.7C5 13.6 12 21 12 21z" />
+      <circle cx="12" cy="8.6" r="2.3" />
+    </>
+  )}
+
+  {slug === "avaluos" && (
+    <>
+      <rect x="5.5" y="3" width="13" height="18" rx="1" />
+      <path d="M8.3 8h7.4M8.3 12h5.4" />
+      <path d="M8.3 16.3l2 2 4.2-4.6" />
+    </>
+  )}
+</svg>

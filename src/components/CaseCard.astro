@@ -1,0 +1,139 @@
+---
+import { whatsappUrl } from "../data/sitio.js";
+import CaseIcon from "./icons/CaseIcon.astro";
+
+interface Caso {
+  slug: string;
+  titulo: string;
+  problemaCliente: string;
+  consecuencia: string;
+  mensajeWhatsApp: string;
+}
+
+interface Props {
+  caso: Caso;
+  indice: number;
+  retraso?: number;
+}
+
+const { caso, indice, retraso = 0 } = Astro.props;
+const numero = String(indice).padStart(2, "0");
+---
+
+<article class="caso fade-in-scroll" id={caso.slug} style={`transition-delay: ${retraso}ms`}>
+  <span class="caso__numero" aria-hidden="true">{numero}</span>
+
+  <div class="caso__cuerpo">
+    <div class="caso__encabezado">
+      <span class="caso__icono"><CaseIcon slug={caso.slug} /></span>
+      <h3 class="caso__titulo">{caso.titulo}</h3>
+    </div>
+    <p class="caso__problema">"{caso.problemaCliente}"</p>
+    <p class="caso__consecuencia">{caso.consecuencia}</p>
+    <a class="caso__enlace" href={whatsappUrl(caso.mensajeWhatsApp)} target="_blank" rel="noopener noreferrer">
+      <span>Ver cómo se resuelve</span>
+      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">
+        <path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+  </div>
+</article>
+
+<style>
+  .caso {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(3rem, auto) 1fr;
+    gap: 1.25rem;
+    padding-block: 2rem;
+    transition: background-color 500ms ease;
+  }
+
+  .caso:hover {
+    background: linear-gradient(
+      to right,
+      var(--color-bg-alt) 0%,
+      transparent 65%
+    );
+  }
+
+  .caso__numero {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 4vw, 3rem);
+    line-height: 1;
+    color: var(--color-borde);
+    transition: color 400ms ease;
+  }
+
+  .caso:hover .caso__numero {
+    color: var(--color-acento);
+  }
+
+  .caso__encabezado {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .caso__icono {
+    display: inline-flex;
+    color: var(--color-acento);
+    flex-shrink: 0;
+  }
+
+  .caso__titulo {
+    font-size: var(--paso-2);
+    line-height: 1.25;
+    margin-bottom: 0;
+  }
+
+  .caso__problema {
+    font-style: italic;
+    color: var(--color-text);
+    max-width: 42rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .caso__consecuencia {
+    color: var(--color-text-muted);
+    font-size: 0.92rem;
+    max-width: 42rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .caso__enlace {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--color-principal);
+    text-decoration: none;
+  }
+
+  .caso__enlace svg {
+    transition: transform var(--transicion);
+  }
+
+  .caso__enlace:hover {
+    color: var(--color-acento);
+  }
+
+  .caso__enlace:hover svg {
+    transform: translateX(3px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .caso__enlace:hover svg {
+      transform: none;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .caso {
+      grid-template-columns: 5.5rem 1fr;
+      padding-block: 2.25rem;
+    }
+  }
+</style>

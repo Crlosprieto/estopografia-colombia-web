@@ -1,0 +1,121 @@
+---
+import { sitio } from "../data/sitio.js";
+import OptImage from "./OptImage.astro";
+
+const iconosEquipo = [
+  // Estación total: tripode + instrumento
+  '<circle cx="12" cy="6" r="2.1"/><path d="M12 8.1V12"/><path d="M12 12L6 20M12 12l6 8"/>',
+  // GPS: pin con mira
+  '<path d="M12 21s7-7.4 7-12.3A7 7 0 105 8.7C5 13.6 12 21 12 21z"/><circle cx="12" cy="8.6" r="2.3"/>',
+  // Drone: cruz con 4 hélices
+  '<circle cx="12" cy="12" r="2"/><path d="M12 10V5M12 14v5M10 12H5m9 0h5"/><circle cx="5" cy="5" r="1.6"/><circle cx="19" cy="5" r="1.6"/><circle cx="5" cy="19" r="1.6"/><circle cx="19" cy="19" r="1.6"/>',
+];
+---
+
+<section id="equipos" class="seccion-borde-superior">
+  <span class="numero-fondo" aria-hidden="true">03</span>
+  <div class="contenedor">
+    <div class="encabezado-seccion">
+      <span class="encabezado-seccion__numero">03 / Equipos</span>
+      <h2 class="encabezado-seccion__titulo">Instrumentos con precisión certificada</h2>
+    </div>
+
+    <div class="equipos__grid">
+      {sitio.equipos.map((equipo, i) => (
+        <article class="equipo tarjeta-elevar fade-in-scroll" style={`transition-delay: ${i * 100}ms`}>
+          <div class="marco-elegante escuadras equipo__marco">
+            <div class="marco-elegante__interior">
+              <OptImage nombre={equipo.imagen} alt={equipo.nombre} width={i === 0 ? 480 : 360} height={i === 0 ? 560 : 260} />
+            </div>
+            <div class="equipo__icono" set:html={`<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconosEquipo[i]}</svg>`} />
+          </div>
+          <h3 class="equipo__nombre">{equipo.nombre}</h3>
+          <p class="texto-muted">{equipo.descripcion}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .equipos__grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .equipo {
+    padding: 1rem;
+    background: var(--color-bg-inversa);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+  }
+
+  .equipo__marco {
+    position: relative;
+    margin-bottom: 1.75rem;
+  }
+
+  .equipo__icono {
+    position: absolute;
+    right: -14px;
+    bottom: -14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--color-principal);
+    color: var(--color-acento);
+    box-shadow: 0 6px 16px rgba(20, 24, 31, 0.22);
+    transition: transform 350ms ease, background-color var(--transicion);
+  }
+
+  .equipo:hover .equipo__icono {
+    transform: scale(1.12) rotate(-8deg);
+    background: var(--color-acento);
+    color: #fff;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .equipo:hover .equipo__icono {
+      transform: none;
+    }
+  }
+
+  .equipo__nombre {
+    font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);
+    line-height: 1.3;
+  }
+
+  /* La foto destacada (retrato) solo tiene sentido cuando el grid asimétrico
+     de 2 filas está activo (≥768px). En móvil, todo se apila en una sola
+     columna, así que las tres fotos deben compartir la misma proporción. */
+  .equipo:first-child .marco-elegante__interior :global(.opt-image) {
+    aspect-ratio: 360 / 260 !important;
+  }
+
+  @media (min-width: 768px) {
+    .equipo:first-child .marco-elegante__interior :global(.opt-image) {
+      aspect-ratio: 480 / 560 !important;
+    }
+
+    .equipos__grid {
+      grid-template-columns: 1.15fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 1.75rem;
+    }
+
+    .equipo:first-child {
+      grid-row: 1 / 3;
+    }
+
+    .equipo:first-child .equipo__marco {
+      margin-bottom: 2rem;
+    }
+
+    .equipo:first-child .equipo__nombre {
+      font-size: clamp(1.2rem, 1.05rem + 0.5vw, 1.4rem);
+    }
+  }
+</style>

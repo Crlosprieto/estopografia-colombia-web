@@ -1,0 +1,57 @@
+---
+import { sitio } from "../data/sitio.js";
+import OptImage from "./OptImage.astro";
+---
+
+<section id="sobre-mi" class="seccion-borde-superior seccion-alt">
+  <div class="curvas-nivel-fondo curvas-nivel-fondo--sutil" aria-hidden="true"></div>
+  <span class="numero-fondo" aria-hidden="true">02</span>
+  <div class="contenedor sobre-mi__grid">
+    <div class="marco-elegante escuadras sobre-mi__marco fade-in-scroll">
+      <div class="marco-elegante__interior">
+        <OptImage nombre={sitio.sobreMiImagen} alt={sitio.sobreMiImagenAlt} width={480} height={400} />
+      </div>
+    </div>
+    <div class="sobre-mi__texto fade-in-scroll">
+      <span class="encabezado-seccion__numero">02 / Sobre mí</span>
+      <h2 class="encabezado-seccion__titulo">{sitio.nombre}</h2>
+      <p class="sobre-mi__cita">{sitio.sobreMiCita}</p>
+      {sitio.sobreMi.map((parrafo) => (
+        <p class="sobre-mi__parrafo">{parrafo}</p>
+      ))}
+      <p class="texto-muted sobre-mi__parrafo">
+        Ha trabajado con {sitio.clientesDestacados}.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sobre-mi__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .sobre-mi__cita {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+    color: var(--color-principal);
+    line-height: 1.4;
+    padding-left: 1rem;
+    border-left: 2px solid var(--color-acento);
+    margin-bottom: 1.5rem;
+  }
+
+  .sobre-mi__parrafo {
+    font-size: 0.98rem;
+  }
+
+  @media (min-width: 900px) {
+    .sobre-mi__grid {
+      grid-template-columns: 1.45fr 1.35fr;
+    }
+  }
+</style>

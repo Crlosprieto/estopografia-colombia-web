@@ -1,0 +1,74 @@
+---
+// Caja de imagen autocontenida: siempre ocupa el tamaño/proporción final
+// (via aspect-ratio calculado de width/height), así que un placeholder y su
+// foto real de reemplazo ocupan exactamente el mismo espacio sin mover el
+// layout. Si sitio.js apunta a un ".svg" (nuestra convención de "todavía no
+// hay foto"), se muestra un placeholder elegante en vez de intentar procesar
+// ese archivo como imagen final. Cualquier otro formato (jpg/png/webp/avif)
+// pasa por astro:assets con calidad y densidad (1x/2x) altas para pantallas
+// retina, sin sacrificar nitidez.
+import { Image } from "astro:assets";
+import { imagen } from "../utils/imagenes.js";
+import ImagePlaceholder from "./ImagePlaceholder.astro";
+
+interface Props {
+  nombre: string;
+  alt: string;
+  width: number;
+  height: number;
+  loading?: "lazy" | "eager";
+  fetchpriority?: "high" | "low" | "auto";
+  class?: string;
+  style?: string;
+  etiquetaPlaceholder?: string;
+}
+
+const {
+  nombre,
+  alt,
+  width,
+  height,
+  loading = "lazy",
+  fetchpriority = "auto",
+  class: clase = "",
+  style = "",
+  etiquetaPlaceholder,
+} = Astro.props;
+
+const esPlaceholder = nombre.endsWith(".svg");
+const estiloCaja = `aspect-ratio: ${width} / ${height}; ${style}`;
+---
+
+<div class={`opt-image ${clase}`} style={estiloCaja}>
+  {esPlaceholder ? (
+    <ImagePlaceholder alt={alt} etiqueta={etiquetaPlaceholder} />
+  ) : (
+    <Image
+      src={imagen(nombre)}
+      alt={alt}
+      width={width}
+      height={height}
+      densities={[1, 2]}
+      quality={85}
+      format="webp"
+      loading={loading}
+      fetchpriority={fetchpriority}
+    />
+  )}
+</div>
+
+<style>
+  .opt-image {
+    display: block;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .opt-image :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>

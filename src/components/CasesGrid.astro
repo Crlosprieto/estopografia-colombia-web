@@ -1,0 +1,34 @@
+---
+import { sitio } from "../data/sitio.js";
+import CaseCard from "./CaseCard.astro";
+---
+
+<section id="casos" class="seccion-borde-superior">
+  <div class="contenedor">
+    <div class="encabezado-seccion">
+      <span class="encabezado-seccion__numero">01 / Casos</span>
+      <h2 class="encabezado-seccion__titulo">¿Cuál es su situación?</h2>
+      <p class="encabezado-seccion__subtitulo">
+        Cada predio tiene su propio problema. Encuentre el suyo y escriba directamente
+        con el mensaje ya listo.
+      </p>
+    </div>
+
+    <div class="casos__lista">
+      {sitio.casos.map((caso, i) => (
+        <CaseCard caso={caso} indice={i + 1} retraso={Math.min(i, 4) * 60} />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .casos__lista {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .casos__lista > :global(.caso + .caso) {
+    border-top: 1px solid var(--color-borde);
+  }
+</style>

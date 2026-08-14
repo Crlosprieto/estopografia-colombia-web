@@ -1,0 +1,144 @@
+---
+import { sitio } from "../data/sitio.js";
+import OptImage from "./OptImage.astro";
+import { crearCarruselCss } from "../utils/carrusel.js";
+
+const destacados = sitio.galeria.filter((item) => item.destacado);
+const resto = sitio.galeria.filter((item) => !item.destacado);
+
+const { css: keyframesCss, duracionCiclo, duracionSlot } = crearCarruselCss(
+  "galeria-carrusel-fade",
+  Math.max(destacados[0]?.imagenes?.length ?? 1, 1)
+);
+---
+
+<style is:inline set:html={keyframesCss}></style>
+
+<section id="trabajos" class="seccion-borde-superior seccion-alt">
+  <div class="curvas-nivel-fondo curvas-nivel-fondo--sutil" aria-hidden="true"></div>
+  <span class="numero-fondo" aria-hidden="true">04</span>
+  <div class="contenedor">
+    <div class="encabezado-seccion">
+      <span class="encabezado-seccion__numero">04 / Trabajos</span>
+      <h2 class="encabezado-seccion__titulo">Proyectos en campo</h2>
+    </div>
+
+    {destacados.map((item) => (
+      <article class="galeria__destacado tarjeta-elevar fade-in-scroll">
+        <div class="marco-elegante escuadras galeria__destacado-marco">
+          <div class="marco-elegante__interior galeria__carrusel">
+            {item.imagenes.map((foto, i) => (
+              <OptImage
+                nombre={foto.imagen}
+                alt={foto.alt}
+                width={800}
+                height={600}
+                loading={i === 0 ? "eager" : "lazy"}
+                class="galeria__carrusel-item"
+                style={`animation-duration: ${duracionCiclo}s; animation-delay: ${i * duracionSlot}s;`}
+              />
+            ))}
+          </div>
+        </div>
+        <div class="galeria__destacado-texto">
+          <h3>{item.leyenda}</h3>
+          {item.descripcion && <p class="texto-muted">{item.descripcion}</p>}
+        </div>
+      </article>
+    ))}
+
+    {resto.length > 0 && (
+      <div class="galeria__grid">
+        {resto.map((item) => (
+          <figure class="galeria__item fade-in-scroll">
+            <OptImage nombre={item.imagen} alt={item.leyenda} width={400} height={300} class="galeria__item-imagen" />
+            <figcaption class="texto-muted">{item.leyenda}</figcaption>
+          </figure>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .galeria__destacado {
+    display: grid;
+    gap: 1.75rem;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    padding: 1.5rem;
+    background: var(--color-bg-inversa);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+  }
+
+  .galeria__carrusel {
+    position: relative;
+    aspect-ratio: 4 / 3;
+  }
+
+  .galeria__carrusel :global(.galeria__carrusel-item) {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    animation-name: galeria-carrusel-fade;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .galeria__carrusel :global(.galeria__carrusel-item) {
+      animation: none;
+      opacity: 0;
+    }
+
+    .galeria__carrusel :global(.galeria__carrusel-item:first-child) {
+      opacity: 1;
+    }
+  }
+
+  .galeria__destacado-texto h3 {
+    font-size: var(--paso-3);
+    line-height: 1.15;
+    margin-bottom: 0.6rem;
+  }
+
+  .galeria__destacado-texto p {
+    font-size: var(--paso-0);
+    line-height: 1.65;
+  }
+
+  .galeria__grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    max-width: 48rem;
+  }
+
+  .galeria__item {
+    margin: 0;
+  }
+
+  .galeria__item :global(.galeria__item-imagen) {
+    border-radius: var(--radio);
+    border: 1px solid var(--color-borde);
+    margin-bottom: 0.5rem;
+  }
+
+  .galeria__item figcaption {
+    font-size: 0.85rem;
+  }
+
+  @media (min-width: 768px) {
+    .galeria__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 900px) {
+    .galeria__destacado {
+      grid-template-columns: 1.2fr 1fr;
+      padding: 2rem;
+    }
+  }
+</style>

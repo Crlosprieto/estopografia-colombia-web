@@ -1,0 +1,165 @@
+---
+import { sitio } from "../data/sitio.js";
+import "../styles/global.css";
+import "@fontsource-variable/fraunces/standard.css";
+import "@fontsource-variable/inter";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = sitio.seo.title, description = sitio.seo.description } = Astro.props;
+
+const urlCanonica = sitio.seo.siteUrl;
+const urlImagenOg = `${sitio.seo.siteUrl}${sitio.seo.ogImage}`;
+
+// Datos estructurados (Schema.org), como un solo @graph con dos entidades:
+// el negocio (ProfessionalService, con sus servicios reales como Offer/Service)
+// y el sitio web. No incluye dirección física (decisión de privacidad) ni
+// BreadcrumbList/LocalBusiness con address: no aplican a este sitio de una sola página.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ProfessionalService",
+      "@id": `${urlCanonica}/#negocio`,
+      name: sitio.nombreComercial,
+      description: sitio.seo.description,
+      url: urlCanonica,
+      image: urlImagenOg,
+      telephone: `+${sitio.whatsapp}`,
+      email: sitio.email,
+      areaServed: sitio.municipiosCobertura.map((municipio) => ({
+        "@type": "Place",
+        name: municipio,
+      })),
+      founder: {
+        "@type": "Person",
+        name: sitio.nombre,
+        jobTitle: sitio.titulo,
+        hasCredential: {
+          "@type": "EducationalOccupationalCredential",
+          credentialCategory: "license",
+          name: sitio.matricula,
+          recognizedBy: {
+            "@type": "Organization",
+            name: sitio.matriculaEntidad,
+          },
+        },
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone: `+${sitio.whatsapp}`,
+        contactType: "customer service",
+        areaServed: "CO",
+        availableLanguage: "Spanish",
+      },
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Servicios de topografía",
+        itemListElement: sitio.casos.map((caso, i) => ({
+          "@type": "Offer",
+          position: i + 1,
+          itemOffered: {
+            "@type": "Service",
+            name: caso.titulo,
+            description: caso.problemaCliente,
+          },
+        })),
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${urlCanonica}/#sitio-web`,
+      name: sitio.nombreComercial,
+      url: urlCanonica,
+      inLanguage: "es-CO",
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="es-CO">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#1B2A44" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href={urlCanonica} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={urlCanonica} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:site_name" content={sitio.nombreComercial} />
+    <meta property="og:image" content={urlImagenOg} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/svg+xml" />
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={urlImagenOg} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <!-- Si JavaScript no carga o está desactivado, el contenido con animación
+         de aparición no debe quedar invisible: esto lo fuerza a mostrarse. -->
+    <noscript>
+      <style>
+        .fade-in-scroll,
+        .hero-entrada {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
+  </head>
+  <body>
+    <a href="#contenido" class="skip-link">Saltar al contenido</a>
+    <slot />
+
+    <script>
+      console.log(
+        "%c¿Revisando el código? A mí también me gusta medir las cosas con precisión.\n— Carlos, ESTOPOGRAFIA COLOMBIA",
+        "color:#B08D3E; font-style:italic; font-size:13px;"
+      );
+
+      // Animación de aparición al hacer scroll. Respeta prefers-reduced-motion
+      // (que además ya está cubierto en CSS con una regla @media).
+      const prefiereMenosMovimiento = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+
+      const elementos = document.querySelectorAll(".fade-in-scroll");
+
+      if (prefiereMenosMovimiento || !("IntersectionObserver" in window)) {
+        elementos.forEach((el) => el.classList.add("es-visible"));
+      } else {
+        const observer = new IntersectionObserver(
+          (entradas) => {
+            entradas.forEach((entrada) => {
+              if (entrada.isIntersecting) {
+                entrada.target.classList.add("es-visible");
+                observer.unobserve(entrada.target);
+              }
+            });
+          },
+          { threshold: 0.15 }
+        );
+
+        elementos.forEach((el) => observer.observe(el));
+      }
+    </script>
+  </body>
+</html>

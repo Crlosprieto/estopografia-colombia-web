@@ -1,0 +1,380 @@
+---
+import { sitio, whatsappUrl } from "../data/sitio.js";
+import OptImage from "./OptImage.astro";
+import { crearCarruselCss } from "../utils/carrusel.js";
+
+const fotos = sitio.heroCarrusel;
+const { css: keyframesCss, duracionCiclo, duracionSlot } = crearCarruselCss(
+  "hero-carrusel-fade",
+  fotos.length
+);
+---
+
+<style is:inline set:html={keyframesCss}></style>
+
+<section class="hero" id="contenido">
+  <div class="curvas-nivel-fondo" aria-hidden="true"></div>
+  <span class="numero-fondo" aria-hidden="true">00</span>
+  <div class="contenedor hero__grid">
+    <div class="hero__texto">
+      <p class="encabezado-seccion__numero hero-entrada" style="--retraso: 0ms">
+        00 / {sitio.heroKicker}
+      </p>
+      <h1 class="hero__titular hero-entrada" style="--retraso: 100ms">{sitio.heroTitular}</h1>
+      <p class="hero__subtitulo hero-entrada" style="--retraso: 200ms">{sitio.heroSubtitulo}</p>
+      <div class="hero__acciones hero-entrada" style="--retraso: 300ms">
+        <a class="btn btn-primario hero__cta" href={whatsappUrl(sitio.mensajeWhatsAppGenerico)} target="_blank" rel="noopener noreferrer">
+          <span>Cuénteme su caso por WhatsApp</span>
+          <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">
+            <path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
+        <a class="btn btn-secundario" href={`tel:+${sitio.whatsapp}`}>
+          Prefiero llamar
+        </a>
+      </div>
+      <div class="hero__pie hero-entrada" style="--retraso: 380ms">
+        <span class:list={["hero__disponibilidad", { "hero__disponibilidad--inactivo": !sitio.disponible }]}>
+          <span class="hero__disponibilidad-punto" aria-hidden="true"></span>
+          {sitio.disponible ? "Disponible para nuevos proyectos" : "Agenda completa por ahora"}
+        </span>
+        <p class="hero__credenciales">
+          <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true" focusable="false">
+            <circle cx="10" cy="10" r="9" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <path d="M6 10.2l2.6 2.6L14.5 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          {sitio.matricula} · {sitio.licenciaEstado}
+        </p>
+      </div>
+    </div>
+    <div class="hero__imagen hero-entrada" style="--retraso: 180ms">
+      <div class="hero__marco" id="hero-marco">
+        <div class="hero__carrusel">
+          {fotos.map((foto, i) => (
+            <OptImage
+              nombre={foto.imagen}
+              alt={foto.alt}
+              width={480}
+              height={480}
+              loading={i === 0 ? "eager" : "lazy"}
+              fetchpriority={i === 0 ? "high" : "low"}
+              class="hero__carrusel-item"
+              style={`animation-duration: ${duracionCiclo}s; animation-delay: ${i * duracionSlot}s;`}
+            />
+          ))}
+        </div>
+        <div class="hero__mira" id="hero-mira" aria-hidden="true"></div>
+      </div>
+      <p class="anotacion-tecnica hero__coordenadas">4°20′ N · 74°22′ O — Fusagasugá, Colombia</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    z-index: 0;
+    overflow: hidden;
+    padding-top: clamp(2.25rem, 5vw, 4rem);
+    padding-bottom: clamp(1rem, 3vw, 2rem);
+  }
+
+  .hero__grid {
+    position: relative;
+    display: grid;
+    gap: 2.25rem;
+    align-items: center;
+  }
+
+  .hero__texto {
+    max-width: 40rem;
+  }
+
+  .hero__titular {
+    font-size: clamp(2.05rem, 7vw, 3.7rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.7rem;
+  }
+
+  .hero__subtitulo {
+    color: var(--color-text-muted);
+    font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+    margin-bottom: 0;
+  }
+
+  .hero__acciones {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+
+  .hero__acciones .btn {
+    width: 100%;
+  }
+
+  @media (min-width: 480px) {
+    .hero__acciones {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 0.9rem;
+    }
+
+    .hero__acciones .btn {
+      width: auto;
+    }
+  }
+
+  .hero__cta svg {
+    transition: transform var(--transicion);
+  }
+
+  .hero__cta:hover svg {
+    transform: translateX(3px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__cta:hover svg {
+      transform: none;
+    }
+  }
+
+  .hero__pie {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .hero__disponibilidad {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    padding: 0.5em 1em 0.5em 0.85em;
+    border: 1px solid rgba(63, 145, 66, 0.3);
+    border-radius: 999px;
+    background: rgba(63, 145, 66, 0.07);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: #1e5e21;
+  }
+
+  .hero__disponibilidad-punto {
+    position: relative;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #3f9142;
+    flex-shrink: 0;
+  }
+
+  .hero__disponibilidad-punto::before {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 1.5px solid #3f9142;
+    opacity: 0.55;
+    animation: pulso-disponible 2.4s ease-out infinite;
+  }
+
+  @keyframes pulso-disponible {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.55;
+    }
+    100% {
+      transform: scale(1.6);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__disponibilidad-punto::before {
+      animation: none;
+    }
+  }
+
+  .hero__disponibilidad--inactivo {
+    border-color: var(--color-borde);
+    background: var(--color-bg-alt);
+    color: var(--color-text-muted);
+  }
+
+  .hero__disponibilidad--inactivo .hero__disponibilidad-punto {
+    background: var(--color-text-muted);
+  }
+
+  .hero__disponibilidad--inactivo .hero__disponibilidad-punto::before {
+    border-color: var(--color-text-muted);
+  }
+
+  .hero__credenciales {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+  }
+
+  .hero__credenciales svg {
+    color: var(--color-acento);
+    flex-shrink: 0;
+  }
+
+  .hero__imagen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .hero__marco {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    padding: 10px;
+  }
+
+  .hero__marco::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--color-borde);
+    border-radius: 50%;
+  }
+
+  .hero__marco::after {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    border: 1px solid var(--color-acento);
+    opacity: 0.5;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .hero__carrusel {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+  }
+
+  .hero__carrusel :global(.hero__carrusel-item) {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    opacity: 0;
+    animation-name: hero-carrusel-fade;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+
+  .hero__coordenadas {
+    justify-content: center;
+  }
+
+  /* Mira que seguirá al cursor sobre la foto (solo con mouse real: ver script) */
+  .hero__mira {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 26px;
+    height: 26px;
+    margin: -13px 0 0 -13px;
+    background: url("/img/marca-firma.svg") center / contain no-repeat;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 250ms ease;
+    filter: drop-shadow(0 1px 2px rgba(20, 24, 31, 0.35));
+  }
+
+  .hero__marco.hero__marco--mira-activa .hero__mira {
+    opacity: 0.9;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__carrusel :global(.hero__carrusel-item) {
+      animation: none;
+      opacity: 0;
+    }
+
+    .hero__carrusel :global(.hero__carrusel-item:first-child) {
+      opacity: 1;
+    }
+  }
+
+  /* --- Entrada inicial suave (una sola vez, al cargar) ----------------------- */
+  @keyframes hero-entrada {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero-entrada {
+    animation: hero-entrada 750ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--retraso, 0ms);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-entrada {
+      animation: none;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .hero__grid {
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 3rem;
+    }
+
+    .hero__texto {
+      max-width: none;
+    }
+
+    .hero__titular {
+      max-width: 17ch;
+    }
+
+    .hero__subtitulo {
+      max-width: 34ch;
+    }
+  }
+</style>
+
+<script>
+  // Pequeño detalle para quien explore con mouse: una mira sigue el cursor
+  // sobre la foto, como si se estuviera "midiendo" el retrato. Solo se activa
+  // con puntero fino (mouse real) para no interferir en pantallas táctiles.
+  const marco = document.getElementById("hero-marco");
+  const mira = document.getElementById("hero-mira");
+
+  if (marco && mira && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    marco.addEventListener("mousemove", (evento) => {
+      const rect = marco.getBoundingClientRect();
+      const x = evento.clientX - rect.left;
+      const y = evento.clientY - rect.top;
+      mira.style.transform = `translate(${x}px, ${y}px)`;
+    });
+
+    marco.addEventListener("mouseenter", () => {
+      marco.classList.add("hero__marco--mira-activa");
+    });
+
+    marco.addEventListener("mouseleave", () => {
+      marco.classList.remove("hero__marco--mira-activa");
+    });
+  }
+</script>
