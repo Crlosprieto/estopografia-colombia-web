@@ -38,15 +38,15 @@ const jsonLd = {
         "@type": "Person",
         name: sitio.nombre,
         jobTitle: sitio.titulo,
-        hasCredential: {
+        hasCredential: sitio.credenciales.map((credencial) => ({
           "@type": "EducationalOccupationalCredential",
           credentialCategory: "license",
-          name: sitio.matricula,
+          name: credencial.matricula,
           recognizedBy: {
             "@type": "Organization",
-            name: sitio.matriculaEntidad,
+            name: credencial.entidadNombre,
           },
-        },
+        })),
       },
       contactPoint: {
         "@type": "ContactPoint",

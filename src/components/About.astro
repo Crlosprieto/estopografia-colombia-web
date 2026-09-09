@@ -22,6 +22,40 @@ import OptImage from "./OptImage.astro";
       <p class="texto-muted sobre-mi__parrafo">
         Ha trabajado con {sitio.clientesDestacados}.
       </p>
+
+      <div class="credenciales">
+        <span class="credenciales__titulo">También matriculado en cartografía</span>
+        <ul class="credenciales__lista">
+          {sitio.credenciales
+            .filter((credencial) => credencial.mostrarEnPerfil)
+            .map((credencial) => (
+              <li class="credencial">
+                <span class="credencial__datos">
+                  <span class="credencial__matricula">{credencial.matricula}</span>
+                  <span class="credencial__entidad">{credencial.profesion}</span>
+                </span>
+                <a
+                  class="credencial__enlace"
+                  href={credencial.urlVerificacion}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Verificar
+                  <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false">
+                    <path d="M6 3h7v7M13 3 4 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span class="sr-only">
+                    la matrícula {credencial.matricula} ante el {credencial.entidadNombre} (abre en una pestaña nueva)
+                  </span>
+                </a>
+              </li>
+            ))}
+        </ul>
+        <p class="credenciales__nota texto-muted">
+          Consúltela por número de matrícula en el registro público del Consejo
+          Profesional Nacional de Ingeniería (COPNIA).
+        </p>
+      </div>
     </div>
   </div>
 </section>
@@ -47,6 +81,82 @@ import OptImage from "./OptImage.astro";
 
   .sobre-mi__parrafo {
     font-size: 0.98rem;
+  }
+
+  .credenciales {
+    margin-top: 1.75rem;
+    padding: 1.15rem 1.3rem;
+    border: 1px solid var(--color-borde);
+    border-left: 2px solid var(--color-acento);
+    border-radius: var(--radio);
+    background: var(--color-bg-inversa);
+  }
+
+  .credenciales__titulo {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .credenciales__lista {
+    list-style: none;
+    margin: 0.9rem 0 0;
+    padding: 0;
+  }
+
+  .credencial {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.4rem 1rem;
+  }
+
+  .credencial + .credencial {
+    margin-top: 0.85rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--color-borde);
+  }
+
+  .credencial__datos {
+    display: grid;
+    gap: 0.1rem;
+  }
+
+  .credencial__matricula {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--color-principal);
+  }
+
+  .credencial__entidad {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+
+  .credencial__enlace {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.82rem;
+    white-space: nowrap;
+    color: var(--color-acento-dark);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 160ms ease;
+  }
+
+  .credencial__enlace:hover,
+  .credencial__enlace:focus-visible {
+    border-bottom-color: currentColor;
+  }
+
+  .credenciales__nota {
+    margin: 0.9rem 0 0;
+    font-size: 0.78rem;
+    line-height: 1.5;
   }
 
   @media (min-width: 900px) {

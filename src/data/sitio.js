@@ -22,11 +22,51 @@ export const sitio = {
   nombreComercial: NOMBRE_COMERCIAL,
   nombre: "Carlos Andrés Prieto Alarcón",
   nombreCorto: "Carlos",
-  titulo: "Topógrafo profesional",
+  titulo: "Topógrafo y cartógrafo profesional",
   credencial: "Tecnólogo en Topografía (SENA) y en Cartografía (UDEC)",
   matricula: "CPNT No. 01-17928",
   matriculaEntidad: "Consejo Profesional Nacional de Topografía",
   licenciaEstado: "Licencia vigente · Sin antecedentes disciplinarios",
+
+  // Dos consejos profesionales distintos respaldan el ejercicio: el CPNT
+  // (topografía) y el COPNIA (tecnología en cartografía). Cada uno mantiene su
+  // propio registro público, así que el cliente verifica la vigencia en la
+  // fuente oficial en lugar de confiar en un PDF que cualquiera podría alterar.
+  //
+  // Deliberadamente NO se publica el número de cédula: los buscadores
+  // oficiales permiten consultar por número de matrícula, que sí es dato
+  // público. La cédula no lo es y exponerla facilita la suplantación.
+  // Dos consejos profesionales distintos respaldan el ejercicio: el CPNT
+  // (topografía) y el COPNIA (cartografía). Ambos quedan aquí porque los dos
+  // se publican en los datos estructurados que lee Google (ver Base.astro).
+  //
+  // "mostrarEnPerfil" decide cuál se ve en la tarjeta de "Sobre mí". El CPNT
+  // va en false porque ya aparece en el hero y tres veces en el pie de página;
+  // repetirlo una quinta vez no suma. Cambia el booleano si quieres verlo ahí.
+  //
+  // Deliberadamente NO se publica el número de cédula: los buscadores
+  // oficiales permiten consultar por número de matrícula, que sí es dato
+  // público. La cédula no lo es y exponerla facilita la suplantación.
+  credenciales: [
+    {
+      entidad: "CPNT",
+      matricula: "CPNT No. 01-17928",
+      profesion: "Topografía",
+      entidadNombre: "Consejo Profesional Nacional de Topografía",
+      urlVerificacion:
+        "https://www.cpnt.gov.co/index.php/tramites-y-servicios/consulta-del-registro-de-la-licencia-profesional-en-el-cpnt",
+      mostrarEnPerfil: false,
+    },
+    {
+      entidad: "COPNIA",
+      matricula: "COPNIA No. 25680-010348",
+      profesion: "Cartografía",
+      entidadNombre: "Consejo Profesional Nacional de Ingeniería",
+      urlVerificacion:
+        "https://tramites.copnia.gov.co/Copnia_Microsite/CertificateOfGoodStanding/CertificateOfGoodStandingStart",
+      mostrarEnPerfil: true,
+    },
+  ],
   aniosExperiencia: "17",
   aniosExperienciaTexto: "Más de 17 años de experiencia en campo",
 
